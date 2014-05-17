@@ -18,7 +18,7 @@ addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt,
   require("ggplot2")
   require("gridExtra")
   
-  banner <- ggplot(data = data.table(x = 0, y = 0),
+  banner <- ggplot(data = data.frame(x = 0, y = 0),
                    aes(x = x, y = y)) +
     theme_minimal() +
     theme(line = element_blank(),
@@ -32,5 +32,6 @@ addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt,
              color = font.col, hjust = c(0, 1),
              size = font.size, family = "Avenir Next Condensed")
   
-  grid.arrange(graph, banner, heights = heights)
+  arrangeGrob(graph, banner, heights = heights)
 }
+

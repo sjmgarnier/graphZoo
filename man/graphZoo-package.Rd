@@ -2,39 +2,38 @@
 \alias{graphZoo-package}
 \alias{graphZoo}
 \docType{package}
-\title{
-What the package does (short line)
-~~ package title ~~
-}
+\title{Graph formatting for graphzoo.tumblr.com}
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+This package contains a short set of functions to facilitate the formatting of 
+graphs for the blog graphzoo.tumblr.com. It is unlikely to be helpful to anyone 
+but the author of this blog :-)
 }
 \details{
 \tabular{ll}{
 Package: \tab graphZoo\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 0.1\cr
 Date: \tab 2014-05-15\cr
-License: \tab What license is it under?\cr
+License: \tab GPL v3\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
-Who wrote it
+Simon Garnier - @sjmgarnier
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Simon Garnier <garnier@njit.edu>
 }
 \references{
-~~ Literature or other references for background information ~~
-}
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation directory ~~
-\keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+The functions in this package require ggplot2 and gridExtra to work properly.
 }
 \examples{
-~~ simple examples of the most important functions ~~
+require(ggplot2)
+
+dat <- data.frame(x = 0:100,
+                  y = 0:100 * 2 + rnorm(101, sd = 10))
+g <- ggplot(data = dat,
+            aes(x = x, y = y)) + 
+  geom_point() + geom_smooth(method = "lm") +
+  theme_graphzoo()
+g <- addBanner(g, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt = "SOURCE: NOSOURCE")
+g
 }

@@ -1,9 +1,10 @@
 Package: graphZoo
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Graph formating functions for graphzoo.tumblr.com.
+Version: 0.1
 Date: 2014-05-15
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Simon Garnier - @sjmgarnier
+Maintainer: Simon Garnier <garnier@njit.edu>
+Description: This package contains functions to format ggplot2 graphs for graphzoo.tumblr.com. Most likely it will not be helpful to anyone but me :-)
+License: GPL v3
+Depends: ggplot2 (>= 0.9.3.1), gridExtra (>= 0.9.1)
