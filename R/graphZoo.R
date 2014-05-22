@@ -34,4 +34,3 @@ addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt,
   
   arrangeGrob(graph, banner, heights = heights)
 }
-
