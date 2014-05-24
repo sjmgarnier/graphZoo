@@ -1,4 +1,4 @@
-theme_graphzoo <- function(base_size = 24) {
+theme_graphzoo <- function(base_size = 24, family = "Avenir Next Condensed") {
   require("ggplot2")
   require("gridExtra")
   
@@ -8,7 +8,7 @@ theme_graphzoo <- function(base_size = 24) {
           axis.title.y = element_text(vjust = 0.4),
           axis.title.x = element_text(vjust = 0),
           plot.background = element_rect(fill = "#F0F0F0", color = "#F0F0F0"),
-          text = element_text(family = "Courier"),
+          text = element_text(family = family),
           plot.margin = unit(rep(1, 4), "lines")) 
 }
 
