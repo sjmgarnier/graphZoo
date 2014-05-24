@@ -14,7 +14,7 @@ theme_graphzoo <- function(base_size = 24, family = "Avenir Next Condensed") {
 
 addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt, 
                       heights = c(1, .05), bg = "grey40", 
-                      font.size = 4, font.col = "white") {
+                      family = "Avenir Next Condensed", font.size = 4, font.col = "white") {
   require("ggplot2")
   require("gridExtra")
   
@@ -30,7 +30,7 @@ addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt,
     annotate("text", x = c(-.975, .975), y = 0, 
              label = c(l.txt, r.txt),
              color = font.col, hjust = c(0, 1),
-             size = font.size, family = "Avenir Next Condensed")
+             size = font.size, family = family)
   
   arrangeGrob(graph, banner, heights = heights)
 }
