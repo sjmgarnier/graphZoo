@@ -24,7 +24,7 @@ addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt,
     theme(line = element_blank(),
           text = element_blank(),
           title = element_blank(),
-          plot.margin = unit(c(0,0,-.9,-.9), "lines"),
+          plot.margin = unit(c(0,0,-1,-1), "lines"),
           panel.background = element_rect(fill = bg, color = bg)) +
     coord_cartesian(xlim = c(-1,1)) +
     annotate("text", x = c(-.975, .975), y = 0, 
