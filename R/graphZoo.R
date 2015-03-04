@@ -34,3 +34,18 @@ addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt,
   
   arrangeGrob(graph, banner, heights = heights)
 }
+
+addTitle <- function(graph, title = "My title", n.lines = 1,
+                     family = "Avenir Next", font.size = 16) {
+  graph <- graph + ggtitle(paste0(rep("\n", n.lines)))
+  title.grob <- textGrob(label = title,
+                         x = unit(0.75, "lines"), 
+                         y = unit(-1, "lines"),
+                         hjust = 0, vjust = 1,
+                         gp = gpar(font.size = 16, fontface = "bold", fontfamily = family))
+  
+  arrangeGrob(graph, main = title.grob)
+}
+
+
+
