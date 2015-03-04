@@ -42,7 +42,7 @@ addTitle <- function(graph, title = "My title", n.lines = 1,
                          x = unit(0.75, "lines"), 
                          y = unit(-1, "lines"),
                          hjust = 0, vjust = 1,
-                         gp = gpar(font.size = 16, fontface = "bold", fontfamily = family))
+                         gp = gpar(font.size = font.size, fontface = "bold", fontfamily = family))
   
   arrangeGrob(graph, main = title.grob)
 }
