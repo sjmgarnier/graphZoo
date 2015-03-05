@@ -9,7 +9,7 @@ theme_graphzoo <- function(base_size = 24, family = "Avenir Next") {
           axis.title.y = element_text(vjust = 0.9),
           plot.background = element_rect(fill = "#F0F0F0", color = "#F0F0F0"),
           text = element_text(family = family),
-          plot.margin = unit(rep(0.025, 4), "npc")) 
+          plot.margin = unit(c(0.025, 0.025, 0.05, 0.025), "npc")) 
 }
 
 addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt, 
