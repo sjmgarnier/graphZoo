@@ -14,9 +14,9 @@ gz_graph <- function(g, title = NULL, subtitle = NULL, cex.title = 1,
     subtitle <- gz_title(subtitle, x = mar, y = 1 - mar, hjust = 0, vjust = 1, 
                          fontface = "italic", family = "Avenir Next", size = 3 * cex.title)
     
-    subtitle$theme$plot.margin <- subtitle$theme$plot.margin + unit(c(1.1, 0, 0, 0) * cex.title, "lines")
+    subtitle$theme$plot.margin <- subtitle$theme$plot.margin + unit(c(1.2, 0, 0, 0) * cex.title, "lines")
     
-    g$theme$plot.margin <- g$theme$plot.margin + unit(c(1.1, 0, 0, 0) * cex.title, "lines")
+    g$theme$plot.margin <- g$theme$plot.margin + unit(c(1.2, 0, 0, 0) * cex.title, "lines")
   }
   
   if (!is.null(banner.l) | !is.null(banner.r)) {
