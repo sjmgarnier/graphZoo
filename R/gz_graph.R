@@ -5,14 +5,14 @@ gz_graph <- function(g, title = NULL, subtitle = NULL, cex.title = 1,
   
   if (!is.null(title)) {
     title <- gz_title(title, x = mar, y = 1 - mar, hjust = 0, vjust = 1, 
-                      fontface = "bold", family = "Avenir Next", size = 6 * cex.title)
+                      fontface = "bold", family = "Avenir Next", size = 5 * cex.title)
     
     g$theme$plot.margin <- g$theme$plot.margin + unit(c(1, 0, 0, 0) * cex.title, "lines")
   }
   
   if (!is.null(subtitle)) {
     subtitle <- gz_title(subtitle, x = mar, y = 1 - mar, hjust = 0, vjust = 1, 
-                         fontface = "italic", family = "Avenir Next", size = 4 * cex.title)
+                         fontface = "italic", family = "Avenir Next", size = 3 * cex.title)
     
     subtitle$theme$plot.margin <- subtitle$theme$plot.margin + unit(c(1, 0, 0, 0) * cex.title, "lines")
     
