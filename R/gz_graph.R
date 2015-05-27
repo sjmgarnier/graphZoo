@@ -16,7 +16,7 @@ gz_graph <- function(g, title = NULL, subtitle = NULL, cex.title = 1,
     
     subtitle$theme$plot.margin <- subtitle$theme$plot.margin + unit(c(1, 0, 0, 0) * cex.title, "lines")
     
-    g$theme$plot.margin <- g$theme$plot.margin + unit(c(1, 0, 0, 0) * cex.title, "lines")
+    g$theme$plot.margin <- g$theme$plot.margin + unit(c(1.5, 0, 0, 0) * cex.title, "lines")
   }
   
   if (!is.null(banner.l) | !is.null(banner.r)) {
