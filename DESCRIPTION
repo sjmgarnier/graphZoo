@@ -7,4 +7,4 @@ Author: Simon Garnier - @sjmgarnier
 Maintainer: Simon Garnier <garnier@njit.edu>
 Description: This package contains functions to format ggplot2 graphs for graphzoo.tumblr.com. Most likely it will not be helpful to anyone but me :-)
 License: GPL v3
-Depends: ggplot2 (>= 0.9.3.1), gridExtra (>= 0.9.1)
+Depends: ggplot2 (>= 1.0.1), grid(>= 3.2.1), gridExtra (>= 2.0.0)

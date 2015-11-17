@@ -1,17 +1,3 @@
-theme_graphzoo <- function(base_size = 24, family = "Avenir Next") {
-  require("ggplot2")
-  require("gridExtra")
-  
-  theme_minimal(base_size = base_size) +
-    theme(panel.grid.major = element_line(color = "#00000050"),
-          panel.grid.minor = element_line(color = "#00000012", linetype = 2),
-          axis.title.x = element_text(vjust = -0.5),
-          axis.title.y = element_text(vjust = 0.9),
-          plot.background = element_rect(fill = "#F0F0F0", color = "#F0F0F0"),
-          text = element_text(family = family),
-          plot.margin = unit(c(0.025, 0.025, 0.05, 0.025), "npc")) 
-}
-
 addBanner <- function(graph, l.txt = "GRAPHZOO.TUMBLR.COM", r.txt, 
                       heights = c(1, .05), bg = "grey40", 
                       family = "Avenir Next Condensed", font.size = 4, font.col = "white") {
