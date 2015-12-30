@@ -6,9 +6,9 @@ theme_nothing <- function(base_size = 12, legend = FALSE) {
                  panel.grid.major = ggplot2::element_blank(), 
                  panel.grid.minor = ggplot2::element_blank(), 
                  axis.ticks.length = grid::unit(0, "cm"), 
-                 axis.ticks.margin = grid::unit(0.01, "cm"), 
+                 axis.text = ggplot2::element_text(margin = grid::unit(0.01, "cm")),
                  panel.margin = grid::unit(0, "lines"), 
-                 plot.margin = grid::unit(c(0, 0, -0.5, -0.5), "lines"), 
+                 plot.margin = grid::unit(c(0, 0, 0, 0), "lines"), 
                  complete = TRUE))
   }
   else {
@@ -16,10 +16,10 @@ theme_nothing <- function(base_size = 12, legend = FALSE) {
                  rect = ggplot2::element_blank(), 
                  text = ggplot2::element_blank(), 
                  axis.ticks.length = grid::unit(0, "cm"), 
-                 axis.ticks.margin = grid::unit(0.01, "cm"), 
+                 axis.text = ggplot2::element_text(margin = grid::unit(0.01, "cm")),
                  legend.position = "none", 
                  panel.margin = grid::unit(0, "lines"), 
-                 plot.margin = grid::unit(c(0, 0, -0.5, -0.5), "lines"), 
+                 plot.margin = grid::unit(c(0, 0, 0, 0), "lines"), 
                  complete = TRUE))
   }
 }

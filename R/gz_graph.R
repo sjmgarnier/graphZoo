@@ -2,17 +2,13 @@ gz_graph <- function(g, title = NULL, subtitle = NULL,
                      banner.l = NULL, banner.r = NULL) {
   gBackground <- gz_background()
   
-  gTitle <- gz_title(title, size = 8)
+  gTitle <- gz_title(title, x = 0.025, y = 0.975, size = 10)
   
-  gSubtitle <- gz_title(subtitle, y = 0.925, size = 6, fontface = "italic")
+  gSubtitle <- gz_title(subtitle, x = 0.025, y = 0.900, size = 6, fontface = "italic")
   
-  gBanner <- gz_banner(banner.l, banner.r)
+  gBanner <- gz_banner(banner.l, banner.r, font.size = 6)
   
   gz_combine(gBackground, g, gTitle, gSubtitle, gBanner,
-             top = c(1, 0.9, 1, 1, 1), 
-             bottom = c(0, 0.025, 0, 0, 0))
+             top = c(1, 0.875, 1, 1, 0.05), 
+             bottom = c(0.05, 0, 0.05, 0.05, 0))
 }
-
-
-
-

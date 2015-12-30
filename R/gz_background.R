@@ -7,8 +7,8 @@ gz_background <- function(bg = "#F0F0F0") {
                    text = ggplot2::element_blank(),
                    title = ggplot2::element_blank(),
                    axis.ticks.length = grid::unit(0, "null"),
-                   axis.ticks.margin = grid::unit(0, "null"),
-                   plot.margin = grid::unit(c(0, 0, -0.5, -0.5), "lines"),
+                   axis.text = ggplot2::element_text(margin = grid::unit(0, "null")),
+                   plot.margin = grid::unit(c(0, 0, 0, 0), "lines"),
                    panel.background = ggplot2::element_rect(fill = bg, color = bg)) +
     ggplot2::coord_cartesian(xlim = c(0, 1))
 }
