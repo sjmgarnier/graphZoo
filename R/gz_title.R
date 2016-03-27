@@ -1,4 +1,4 @@
-gz_title <- function(label, x = 0, y = 1, hjust = 0, vjust = 1,  
+gz_title <- function(label, x = 0.025, y = 0.975, hjust = 0, vjust = 1,  
                      fontface = "bold", family = "Open Sans", size = 6) {
   ggplot2::ggplot(data = data.frame(x = 0, y = 0), 
                   ggplot2::aes(x = x, y = y)) +
