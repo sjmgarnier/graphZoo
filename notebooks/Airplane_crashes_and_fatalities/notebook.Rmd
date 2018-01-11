@@ -1,0 +1,19 @@
+---
+title: "R Notebook"
+output: 
+  html_notebook: 
+    fig_caption: yes
+    number_sections: yes
+    theme: flatly
+    toc: yes
+---
+
+# . Setting up
+
+```{r}
+if (!require(pacman))
+  install.packages("pacman")
+
+pacman::p_load(RSocrata, dplyr, tibble, lubridate, stringr, ggplot2)
+pacman::p_load_gh(sjmgarnier/graphZoo)
+```
