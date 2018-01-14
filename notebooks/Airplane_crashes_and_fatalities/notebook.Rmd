@@ -14,6 +14,330 @@ output:
 if (!require(pacman))
   install.packages("pacman")
 
-pacman::p_load(RSocrata, dplyr, tibble, lubridate, stringr, ggplot2)
-pacman::p_load_gh(sjmgarnier/graphZoo)
+pacman::p_load(tibble, readr, dplyr, tidyr, lubridate, stringr, ggplot2, PBSmapping, animation)
+pacman::p_load_gh("sjmgarnier/graphZoo")
 ```
+
+# . Loading and preparing data
+
+```{r}
+if (!file.exists("data.csv")) {
+  tmp <- read_delim("http://app.ntsb.gov/aviationquery/Download.ashx?type=csv", 
+                    "|", na = c("NA", "", "N/A"))
+  write_csv(tmp[, 1:(ncol(tmp) - 1)], "data.csv")
+}
+  
+raw_dat <- read_csv("data.csv") %>%
+  mutate(`Event Date` = mdy(`Event Date`)) %>%
+  filter(year(`Event Date`) >= 1982, year(`Event Date`) < 2018,
+         `Investigation Type` == "Accident", Country == "United States") %>%
+  mutate(`Total Fatal Injuries` = ifelse(is.na(`Total Fatal Injuries`), 0, `Total Fatal Injuries`),
+         `Total Serious Injuries` = ifelse(is.na(`Total Serious Injuries`), 0, `Total Serious Injuries`),
+         `Total Minor Injuries` = ifelse(is.na(`Total Minor Injuries`), 0, `Total Minor Injuries`))
+raw_dat
+```
+
+# . Time 
+
+##. Preparing data
+
+```{r}
+byday_dat <- raw_dat %>%
+  group_by(`Event Date`) %>%
+  summarize(Events = n(),
+            `Total Fatal Injuries` = sum(`Total Fatal Injuries`, na.rm = TRUE),
+            `Total Serious Injuries` = sum(`Total Serious Injuries`, na.rm = TRUE),
+            `Total Minor Injuries` = sum(`Total Minor Injuries`, na.rm = TRUE)) %>%
+  complete(`Event Date` = seq.Date(ymd("1982-01-01"), ymd("2017-12-31"), by = 1),
+           fill = list(Events = 0,
+                       `Total Fatal Injuries` = 0, 
+                       `Total Serious Injuries` = 0,
+                       `Total Minor Injuries` = 0)) %>%
+  mutate(Year = year(`Event Date`),
+         Month = month(`Event Date`, label = TRUE),
+         Week = week(`Event Date`),
+         Day = wday(`Event Date`, label = TRUE, week_start = 1))
+byday_dat
+```
+
+## . Number of accidents per month since 1982
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Month_end = ceiling_date(`Event Date`, unit = "months")) %>%
+  summarize(Events = sum(Events)) %>%
+  ggplot(aes(x = Month_end, y = Events)) +
+  geom_line() +
+  geom_line(stat = "smooth", method = loess, se = FALSE, size = 2, color = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation accidents, 1982-2017", size = 8)
+gSubtitle <- gz_title("per month, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Number of fatalities per month since 1982
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Month_end = ceiling_date(`Event Date`, unit = "months")) %>%
+  summarize(`Total Fatal Injuries` = sum(`Total Fatal Injuries`)) %>%
+  ggplot(aes(x = Month_end, y = `Total Fatal Injuries`)) +
+  geom_line() +
+  geom_line(stat = "smooth", method = loess, se = FALSE, size = 2, color = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation fatalities, 1982-2017", size = 8)
+gSubtitle <- gz_title("per month, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Number of injuries per month since 1982
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Month_end = ceiling_date(`Event Date`, unit = "months")) %>%
+  summarize(Injuries = sum(`Total Serious Injuries`) + sum(`Total Minor Injuries`)) %>%
+  ggplot(aes(x = Month_end, y = Injuries)) +
+  geom_line() +
+  geom_line(stat = "smooth", method = loess, se = FALSE, size = 2, color = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation non-lethal injuries, 1982-2017", size = 8)
+gSubtitle <- gz_title("per month, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Month with most accidents
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Month) %>%
+  summarize(total = sum(Events)) %>%
+  ggplot(aes(x = Month, y = total, group = 1)) +
+  geom_bar(stat = "identity", color = "#DB4A36", fill = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation accidents, 1982-2017", size = 8)
+gSubtitle <- gz_title("total by month, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Days with most accidents
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Day) %>%
+  summarize(total = sum(Events)) %>%
+  ggplot(aes(x = Day, y = total, group = 1)) +
+  geom_bar(stat = "identity", color = "#DB4A36", fill = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation accidents, 1982-2017", size = 8)
+gSubtitle <- gz_title("total by day, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Month with most fatalities
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Month) %>%
+  summarize(total = sum(`Total Fatal Injuries`)) %>%
+  ggplot(aes(x = Month, y = total, group = 1)) +
+  geom_bar(stat = "identity", color = "#DB4A36", fill = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation fatalities, 1982-2017", size = 8)
+gSubtitle <- gz_title("total by month, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Days with most fatalities
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Day) %>%
+  summarize(total = sum(`Total Fatal Injuries`)) %>%
+  ggplot(aes(x = Day, y = total, group = 1)) +
+  geom_bar(stat = "identity", color = "#DB4A36", fill = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation fatalities, 1982-2017", size = 8)
+gSubtitle <- gz_title("total by day, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Month with most injuries
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Month) %>%
+  summarize(total = sum(`Total Serious Injuries`) + sum(`Total Minor Injuries`)) %>%
+  ggplot(aes(x = Month, y = total, group = 1)) +
+  geom_bar(stat = "identity", color = "#DB4A36", fill = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation non-lethal injuries, 1982-2017", size = 8)
+gSubtitle <- gz_title("total by month, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+## . Days with most injuries
+
+```{r, fig.height=3, fig.width=4.5}
+g <- byday_dat %>%
+  group_by(Day) %>%
+  summarize(total = sum(`Total Serious Injuries`) + sum(`Total Minor Injuries`)) %>%
+  ggplot(aes(x = Day, y = total, group = 1)) +
+  geom_bar(stat = "identity", color = "#DB4A36", fill = "#DB4A36", alpha = 0.75) +
+  ylim(0, NA) +
+  xlab(NULL) + ylab(NULL) + 
+  theme_graphzoo(base_size = 20)
+
+gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                     r.txt = "DATA: NTSB",
+                     font.size = 4)
+gTitle <- gz_title("US civil aviation non-lethal injuries, 1982-2017", size = 8)
+gSubtitle <- gz_title("total by day, within the USA, its territories and possessions, and in international waters", 
+                      y = 0.9125, size = 5, fontface = "italic")
+
+gz_combine(g, gTitle, gSubtitle, gBanner,
+           top = c(0.9, 1, 1, 0.05), 
+           bottom = c(0.0125, 0, 0, 0))
+```
+
+# . Space
+
+## . Preparing data
+
+```{r}
+loc_dat <- raw_dat %>%
+  filter(year(`Event Date`) >= 2002, year(`Event Date`) < 2018,
+         !is.na(Latitude), !is.na(Longitude)) %>%
+  mutate(Date_round = ceiling_date(`Event Date`, unit = "3 days"),
+         Longitude = ifelse(Longitude > 0, -Longitude, Longitude))
+loc_dat
+
+xlim <- c(-180, -20)
+ylim <- c(10, 72)
+world_dat <- map_data("world") %>%
+  rename(X = long, Y = lat, PID = group, POS = order) %>%
+  clipPolys(xlim = xlim, ylim = ylim, keepExtra = TRUE) %>%
+  as_tibble()
+world_dat
+```
+
+## . Animated map
+
+```{r, message=FALSE, warning=FALSE, fig.height=3, fig.width=4.5}
+if (!file.exists("animation.mp4")) {
+  gBackground <- gz_background()
+  gBanner <- gz_banner(l.txt = "GRAPHZOO.TUMBLR.COM", 
+                       r.txt = "DATA: NTSB",
+                       font.size = 4)
+  gTitle <- gz_title("Locations of US civil aviation accidents, 2002-2017", size = 8)
+  gSubtitle <- gz_title("within the USA, its territories and possessions, and in international waters", 
+                        y = 0.9125, size = 5, fontface = "italic")
+  
+  saveVideo({
+    dates <- seq.Date(ymd("2002-01-01"), ymd("2017-12-31"), by = 3)
+    for (i in seq(1:length(dates))) {
+      g <- ggplot() +
+        geom_polygon(data = world_dat, aes(x = X, y = Y, group = PID),
+                     fill = "gray50", color = "white") +
+        geom_point(data = filter(loc_dat, Date_round <= dates[i], Date_round >= (dates[i] - 60)), 
+                   aes(x = Longitude, y = Latitude, alpha = 60 - as.numeric(dates[i] - Date_round)), 
+                   pch = 21, fill = "#DB4A36", color = "black", size = 3) +
+        annotate("text", x = -180, y = 11, hjust = 0, vjust = 0,
+                 label = format(dates[i], format = "%b %Y")) +
+        coord_map(xlim = xlim, ylim = ylim) +
+        xlab(NULL) + ylab(NULL) + guides(alpha = FALSE) + 
+        theme_graphzoo(base_size = 18) +
+        theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+      
+      gz_combine(gBackground, g, gTitle, gSubtitle, gBanner,
+                 top = c(1, 0.9, 1, 1, 0.05),
+                 bottom = c(0.05, 0.0125, 0.05, 0.05, 0))
+    }
+  }, ani.height = 480, ani.width = 720, interval = 1 / 30)
+}
+```
+
+![Animation](animation.mp4)
+
+
+
