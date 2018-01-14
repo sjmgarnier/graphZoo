@@ -337,7 +337,9 @@ if (!file.exists("animation.mp4")) {
 }
 ```
 
-![Animation](animation.mp4)
+<video controls="controls">
+  <source src="animation.mp4" type="video/mp4" />
+</video>
 
 
 
